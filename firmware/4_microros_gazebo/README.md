@@ -1,43 +1,56 @@
-# ROSSERIAL GAZEBO
+# MICRO-ROS GAZEBO
 
-This example describe how to establish the rosserial connection between gazebo scripts and ESP32
+This example describe how to establish the micro-ROS connection between Gazebo and ESP32
 
 ## Steps to follow
 
-* Start the ROS Subscriber by executing this command in catkin workspace
+* Navigate to micro-ROS workspace (for example:- `microros_ws`) 
+    * ```cd microros_ws/``` (or name of your workspace directory)
+
+* Start and run the micro-ROS agent on your local system by executing following commands:
 
 ```bash
-rosrun rosserial_python serial_node.py tcp
+colcon build
+source install/setup.bash
+ros2 run micro_ros_agent micro_ros_agent udp4 --port 8888
 ```
 
-* Open another terminal and Configure the ros_control
-    * ``` cd firmware/rosserial_gazebo ```
+
+
+* Open another terminal and source the ESP-IDF environment
+    * ``` cd MARIO/firmware/4_microros_gazebo ```
+    * ```$IDF_PATH/export.sh``` (or ```get_idf``` if you have set up the alias in your `.bashrc` file)
+    
+* Configure the micro-ROS settings 
     * ```idf.py menuconfig```
-    * Inside `component config > MARIO-Rosserial`, Set Wifi ssid and password, Set the IP address (can be found by `ifconfig` command)
+    * inside `micro-ROS Settings` Set up WiFi configuration (SSID and Password) and your IP address in micro-ROS Agent IP (can be found by `ifconfig` command)
+
+**Note** If it shows the error `ifconfig: command not found`, install the package `net-tools` by following command:
+
+```bash
+sudo apt install net-tools
+```
 
 * Build and Flash the code 
     * ```idf.py build```
-    * ```idf.py -p PORT flash```
+    * ```idf.py -p PORT flash``` (For example: ```idf.py -p /dev/ttyUSB0 flash``` )
 
-* In another terminal Start the ROS Core service by running the following command
-    * ```roscore```
 
-* In another terminal Start the ROS Publisher by executing the relevant python script: (e.g. angle -> coordinates)
+
+* In another terminal, Navigate to the ROS2 workspace and Start the Publisher by executing the relevant python script after sourcing the environment
+(Make sure you have previously built the folder by executing `colcon build` command with 4_simulation_gazebo in the src folder):
 
 ```bash
-rosrun simulation_gazebo forward_kinematics.py
+cd ros2_ws/
+source install/setup.bash
+ros2 run simulation_gazebo forward_kinematics.py
 ```
-In the same way publisher_inverse_kinematices.py can be run.
+* You can also run inverse_kinematics.py using above command
 
 **Note**:- If it shows the error that script is not executable, run the following command in the directory where the script is present.
 
 ```bash
-sudo chmod +x publisher_forward_kinematics.py
+sudo chmod +x forward_kinematics.py
 ```
 
 * Enter the angles on the publisher side and voila! See your manipulator moving!
-
-* Demo 
-
-https://user-images.githubusercontent.com/64469823/125934413-7a97437e-f805-4380-8694-8e4b7380a031.mp4
-
