@@ -30,10 +30,17 @@ find_package(robot_state_publisher REQUIRED)
 #   DESTINATION lib/${PROJECT_NAME}
 # )
 
+install (PROGRAMS 
+   scripts/rviz.py
+DESTINATION lib/${PROJECT_NAME}
+)
+
 install(
   DIRECTORY config launch meshes rviz scripts urdf
   DESTINATION share/${PROJECT_NAME}
 )
+
+
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
