@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 # MIT License
 
 # Copyright (c) 2024 Society of Robotics and Automation
@@ -20,34 +20,31 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
-## A multiple listenr demo that subscribes std_msgs/Strings messages
-## from the 3 different 'talker' topics 
-
-import sys
 import rclpy
-from std_msgs.msg import String
+import sys
+from rclpy import qos
+from geometry_msgs.msg import Twist
 
-def cb1(node, msg:String):
-    node.get_logger().info("Heard from talker1 %s" %(msg.data))
-
-def cb2(node, msg:String):
-    node.get_logger().info("Heard from talker2 %s" %(msg.data))
-    
-def cb3(node, msg:String):
-    node.get_logger().info("Heard from talker3 %s" %(msg.data))
+def draw_circle():
+    global pub_vel
+    msg = Twist()
+    msg.linear.x = 3.0
+    msg.angular.z = 5.0   
+    pub_vel.publish(msg)
 
 def main(args=None):
     rclpy.init(args=sys.argv)
-    node = rclpy.create_node("listener")
-    sub1 = node.create_subscription(String, "talker_1", lambda msg: cb1(node, msg), 10)
-    sub2 = node.create_subscription(String, "talker_2", lambda msg: cb2(node, msg), 10)
-    sub3 = node.create_subscription(String, "talker_3", lambda msg: cb3(node, msg), 10)
-
+    global pub_vel
+    node = rclpy.create_node("Circle")
+    pub_vel = node.create_publisher(Twist,"turtle1/cmd_vel",qos_profile=qos.qos_profile_parameters)
+    node.get_logger().info("Circle started")
+    timer = node.create_timer(0.1,draw_circle)
     try:
-        rclpy.spin(node)
+        rclpy.spin(node)  # Spin only one node to handle callbacks
     except KeyboardInterrupt:
         pass
-    rclpy.shutdown() 
 
-if __name__ == "__main__":
+    rclpy.shutdown()
+    
+if __name__=="__main__":
     main()
