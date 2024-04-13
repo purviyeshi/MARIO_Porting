@@ -16,7 +16,7 @@ Before that we need to perform some steps.
 We have the MARIO repository in the workspace. But, for being able to run the script, we need to have the same in the src folder of the ros2_ws.
 * We already have ros2_ws. So now just copy the 2_dh_simulation in the src folder of the ros2_ws. 
 ```
-cp -r /home/(user_name)/MARIO/2_dh_simulation /home/(user_name)/ros2_ws/src
+cp -r /home/(user_name)/MARIO/2_simulation_dh /home/(user_name)/ros2_ws/src
 ``` 
 
 
